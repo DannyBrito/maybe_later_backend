@@ -10,7 +10,7 @@ app.use(morgan('dev'));
 
 const db = require('../util/database')
 
-db.authenticate()
+db.sync()
     .then(() =>  {
         console.log('Connection has been established successfully.')
         return app.listen(process.env.PORT)
