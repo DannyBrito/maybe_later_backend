@@ -96,4 +96,13 @@ describe('Testing USER Routes:',()=>{
         expect(res.statusCode).toBe(400)
         expect(res.body).toBe('could not create')
     })
+
+    test('POST /users with already created user',async()=>{
+        await deleteUsers()
+        const result = await individualSetUp(user1)
+        const res = await request(app).post(USERS_BASE_ROUTE)
+            .send(user1)
+        expect(res.statusCode).toBe(400)
+        expect(res.body).toBe('could not create')
+    })
 })
