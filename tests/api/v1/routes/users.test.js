@@ -40,6 +40,8 @@ describe('Testing USER Routes:',()=>{
         "username":"davidClark"
     }
 
+    const deleteUsers = () => dbConnection.models.User.deleteAll()
+
     beforeAll(async() =>{
         dbConnection = await dbHelper.connect()
     });
@@ -61,9 +63,37 @@ describe('Testing USER Routes:',()=>{
     })
 
     test('GET /users/:id', async()=>{
-        await dbConnection.models.User.deleteAll()
+        await deleteUsers()
         const result = await individualSetUp(user1)
         const res = await request(app).get(USERS_BASE_ROUTE + '/' + result.id)
-        // console.log(res)
+        expect(res.statusCode).toBe(302)
+        expect(res.body).toEqual(result)
+    })
+
+    test('GET /users/:id with invalid ID', async()=>{
+        await deleteUsers()
+        const result = await individualSetUp(user1)
+        const res = await request(app).get(USERS_BASE_ROUTE + '/' + '777')
+        expect(res.statusCode).toBe(404)
+        expect(res.body).toBe('User Not Found')
+    })
+
+    test('POST /users',async()=>{
+        await deleteUsers()
+        const res = await request(app).post(USERS_BASE_ROUTE)
+            .send(user2)
+        delete res.body.id
+        delete res.body.createdAt
+        delete res.body.updatedAt
+        expect(res.statusCode).toBe(201)
+        expect(res.body).toEqual(user2)
+    })
+
+    test('POST /users with invalid body',async()=>{
+        await deleteUsers()
+        const res = await request(app).post(USERS_BASE_ROUTE)
+            .send({})
+        expect(res.statusCode).toBe(400)
+        expect(res.body).toBe('could not create')
     })
 })

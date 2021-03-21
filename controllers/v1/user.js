@@ -39,7 +39,7 @@ const firstName = req.body.firstName
     }
     try{
         user = await User.create(user)
-        return res.status(302).json(user)
+        return res.status(201).json(user)
     }
     catch(error){
         console.log(error)
