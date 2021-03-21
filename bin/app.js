@@ -16,14 +16,4 @@ const apiRouter = require('../routes/api')
 
 app.use('/api', apiRouter)
 
-const db = require('../util/database');
-
-db.sync({force:true})
-    .then(() =>  {
-        console.log('Connection has been established successfully.');
-        return app.listen(process.env.PORT);
-    })
-    .then(() =>console.log(`server listen on: ${process.env.PORT}`))
-    .catch(error => console.error('Unable to connect to the database:',error))
-
-app.use(express.urlencoded({extended:false}));
+module.exports = app
