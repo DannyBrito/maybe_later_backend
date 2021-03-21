@@ -24,9 +24,4 @@ const User = sequelize.define('User', {
     }
 });
 
-
-User.deleteAll = function(){
-    return this.destroy({force:true, where:{},truncate:true})
-}
-
 module.exports = User;
