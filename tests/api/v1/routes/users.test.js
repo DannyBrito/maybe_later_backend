@@ -94,7 +94,7 @@ describe('Testing USER Routes:',()=>{
         const res = await request(app).post(USERS_BASE_ROUTE)
             .send({})
         expect(res.statusCode).toBe(400)
-        expect(res.body).toBe('could not create')
+        expect(res.body.errorType).toBe('SequelizeValidationError')
     })
 
     test('POST /users with already created user',async()=>{
@@ -103,6 +103,6 @@ describe('Testing USER Routes:',()=>{
         const res = await request(app).post(USERS_BASE_ROUTE)
             .send(user1)
         expect(res.statusCode).toBe(400)
-        expect(res.body).toBe('could not create')
+        expect(res.body.errorType).toBe('SequelizeUniqueConstraintError')
     })
 })
