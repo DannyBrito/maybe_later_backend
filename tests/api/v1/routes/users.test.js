@@ -68,14 +68,14 @@ describe('Testing USER Routes:',()=>{
     test('GET /users without any existing user',async()=>{
         const res = await request(app).get(USERS_BASE_ROUTE)
         expect(res.statusCode).toBe(302)
-        expect(res.body).toEqual([])
+        expect(res.body.records).toEqual([])
     })
     
     test('GET /users',async()=>{
         const result = await setup(user1,user2,user3,user4)
         const res = await request(app).get(USERS_BASE_ROUTE)
         expect(res.statusCode).toBe(302)
-        expect(res.body).toEqual(result)
+        expect(res.body.records).toEqual(result)
     })
     
     test('GET /users/:id', async()=>{

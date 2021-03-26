@@ -24,8 +24,7 @@ exports.getUser = async (req,res,next) =>{
 
 exports.indexUsers = async (req,res,next) =>{
     try{
-        const users = await User.findAll();
-        return res.status(302).json(users)
+        return res.status(302).json(res.paginatedResults)
     }
     catch(error){
         next(error)
