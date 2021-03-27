@@ -66,17 +66,18 @@ const User = sequelize.define('User',
         }
     },
     {
+        hooks:{
+            beforeCreate: async (user) =>{
+            user.password = await bcrypt.hash(user.password, 1 * process.env.SALT_ROUNDS)
+            }
+        },
+
         defaultScope: {
             attributes: { exclude: ['password'] }
         },
         scopes: {
             withPassword: {
-                attributes: { }
-            }
-        },
-        hooks:{
-            beforeCreate: async (user) =>{
-            user.password = await bcrypt.hash(user.password, 1 * process.env.SALT_ROUNDS)
+                attributes: {}
             }
         }
     }
@@ -87,7 +88,7 @@ User.deleteAll = function(){
     return this.destroy({force:true, where:{},truncate:true})
 }
 
-User.prototype.validatePassword = async function(password){
+User.prototype.authenticate = async function(password){
     return bcrypt.compare(password, this.password)
 }
 
