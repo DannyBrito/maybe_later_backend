@@ -2,13 +2,13 @@ const User = require('../../models/v1/User')
 
 const params = require('../.././/util/strongParams')
 
-const permitParams = ['firstName','lastName','username']
+const permitParams = ['firstName','lastName','username','password']
 
 exports.getUser = async (req,res,next) =>{
     
     try{
         const id = req.params.id
-        const currentUser = await User.findByPk(id)
+        const currentUser = await User.findByPK(id)
         if(currentUser){
             return res.status(302).json(currentUser)
         }
@@ -35,6 +35,7 @@ exports.createUser = async (req, res, next) =>{
     let user = params(req.body,permitParams) 
     try{
         user = await User.create(user)
+        user = user.toJSON()
         return res.status(201).json(user)
     }
     catch(error){
@@ -46,7 +47,7 @@ exports.updateUser = async (req, res, next) =>{
     try{
         const id = req.params.id
         const newUserInfo = params(req.body,permitParams)
-        let currentUser = await User.findByPk(id)
+        let currentUser = await User.findByPKAndFormat(id)
         if(currentUser){
             Object.keys(newUserInfo)
                 .forEach(key => currentUser[key] = newUserInfo[key])
