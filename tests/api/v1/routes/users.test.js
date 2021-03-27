@@ -27,33 +27,39 @@ describe('Testing USER Routes:',()=>{
     const user1 = {
         "firstName":"Dan",
         "lastName":"Brito",
-        "username":"danBrito"
+        "username":"danBrito",
+        "password":"test"
     }
     const alterUser1 = {
         "firstName":"Tony",
         "lastName":"Johnson",
-        "username":"tonyJohnson"
+        "username":"tonyJohnson",
+        "password":"test"
     }
     
     const similarUser1 = {
         "firstName":"Dan",
         "lastName":"Johnson",
-        "username":"danBrito"
+        "username":"danBrito",
+        "password":"test"
     }
     const user2 = {
         "firstName":"Alex",
         "lastName":"Rest",
-        "username":"alexRest"
+        "username":"alexRest",
+        "password":"test"
     }
     const user3 = {
         "firstName":"Ema",
         "lastName":"So",
-        "username":"emaSo"
+        "username":"emaSo",
+        "password":"test"
     }
     const user4 = {
         "firstName":"David",
         "lastName":"Clark",
-        "username":"davidClark"
+        "username":"davidClark",
+        "password":"test"
     }
     
     const deleteUsers = () => dbConnection.models.User.deleteAll()
