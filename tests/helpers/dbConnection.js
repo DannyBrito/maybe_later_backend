@@ -4,5 +4,7 @@ module.exports = {
         db.options.logging = false
         return db.sync({force:true})
     },
-    disconnect: db => db.close()
+    disconnect: db => db.close(),
+    deleteUsers: db => db.models.User.deleteAll()
+
 }
