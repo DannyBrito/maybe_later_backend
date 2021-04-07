@@ -20,6 +20,7 @@ const formatObjectToCompare = (body) =>{
     delete body.id
     delete body.createdAt
     delete body.updatedAt
+    delete body.password
 }
 describe('Testing USER Routes:',()=>{
     let dbConnection = null;
@@ -62,7 +63,7 @@ describe('Testing USER Routes:',()=>{
         "password":"test"
     }
     
-    const deleteUsers = () => dbConnection.models.User.deleteAll()
+    const deleteUsers = () => dbHelper.deleteUsers(dbConnection)
     
     beforeAll(async() =>{
         dbConnection = await dbHelper.connect()
@@ -78,7 +79,8 @@ describe('Testing USER Routes:',()=>{
     })
     
     test('GET /users',async()=>{
-        const result = await setup(user1,user2,user3,user4)
+        let result = await setup(user1,user2,user3,user4)
+        result = result.sort((a,b) => a.id - b.id)
         const res = await request(app).get(USERS_BASE_ROUTE)
         expect(res.statusCode).toBe(302)
         expect(res.body.records).toEqual(result)
@@ -94,7 +96,6 @@ describe('Testing USER Routes:',()=>{
     
     test('GET /users/:id with invalid ID', async()=>{
         await deleteUsers()
-        const result = await individualSetUp(user1)
         const res = await request(app).get(USERS_BASE_ROUTE + '/' + '777')
         expect(res.statusCode).toBe(404)
         expect(res.body).toBe('User Not Found')
@@ -102,11 +103,15 @@ describe('Testing USER Routes:',()=>{
     
     test('POST /users',async()=>{
         await deleteUsers()
+        const tempUser = {...user2}
         const res = await request(app).post(USERS_BASE_ROUTE)
         .send(user2)
+
         formatObjectToCompare(res.body)
+        formatObjectToCompare(tempUser)
+
         expect(res.statusCode).toBe(201)
-        expect(res.body).toEqual(user2)
+        expect(res.body).toEqual(tempUser)
     })
     
     test('POST /users with invalid body',async()=>{
@@ -114,6 +119,7 @@ describe('Testing USER Routes:',()=>{
         const res = await request(app).post(USERS_BASE_ROUTE)
         .send({})
         expect(res.statusCode).toBe(400)
+        // Type Error Could Change depending Validations or Restrictions
         expect(res.body.errorType).toBe('SequelizeValidationError')
     })
     
@@ -129,20 +135,24 @@ describe('Testing USER Routes:',()=>{
     test('PUT /users/:id update User (all fields)',async()=>{
         await deleteUsers()
         const result = await individualSetUp(user1)
+        const tempUser = {...alterUser1}
         const res = await request(app).put(USERS_BASE_ROUTE + '/' + result.id)
-        .send(alterUser1)
+        .send(tempUser)
         formatObjectToCompare(res.body)
+        formatObjectToCompare(tempUser)
         expect(res.statusCode).toBe(202)
-        expect(res.body).toEqual(alterUser1)
+        expect(res.body).toEqual(tempUser)
     })
     
     test('PUT /users/:id update User (some fields)',async()=>{
         await deleteUsers()
         const result = await individualSetUp(user1)
+        const tempUser = {...similarUser1}
         const res = await request(app).put(USERS_BASE_ROUTE + '/' + result.id)
         .send({"lastName":"Johnson"})
         formatObjectToCompare(res.body)
+        formatObjectToCompare(tempUser)
         expect(res.statusCode).toBe(202)
-        expect(res.body).toEqual(similarUser1)
+        expect(res.body).toEqual(tempUser)
     })
 })
