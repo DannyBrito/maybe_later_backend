@@ -6,6 +6,7 @@ const USERS_BASE_ROUTE = '/api/v1/users';
 const setup = async (...userObjects) =>{
     const userMap = userObjects.map(individualSetUp)
     const users = await Promise.all(userMap)
+    users = users.sort((a,b) => a.id - b.id)
     return users
 }
 
@@ -80,7 +81,6 @@ describe('Testing USER Routes:',()=>{
     
     test('GET /users',async()=>{
         let result = await setup(user1,user2,user3,user4)
-        result = result.sort((a,b) => a.id - b.id)
         const res = await request(app).get(USERS_BASE_ROUTE)
         expect(res.statusCode).toBe(302)
         expect(res.body.records).toEqual(result)
